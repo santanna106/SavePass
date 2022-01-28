@@ -12,6 +12,8 @@ import { Header } from '../../components/Header';
 import { Input } from '../../components/Form/Input';
 import { Button } from '../../components/Form/Button';
 
+
+
 import {
   Container,
   Form
@@ -48,8 +50,22 @@ export function RegisterLoginData() {
     }
 
     const dataKey = '@savepass:logins';
+    try {   
+      const loginList = await AsyncStorage.getItem(dataKey);     
+      let obj = JSON.parse(loginList) || [] ;
+      const newObj = [
+        ...obj,
+        newLoginData
+      ]
+     
+      AsyncStorage.setItem(dataKey,JSON.stringify(newObj));
+       
+      navigate('Home');
+    } catch (error) {
+      console.log(error)
+    }
 
-    // Save data on AsyncStorage and navigate to 'Home' screen
+    
   }
 
   return (
@@ -65,10 +81,8 @@ export function RegisterLoginData() {
             testID="service-name-input"
             title="Nome do serviço"
             name="service_name"
-            error={
-              // Replace here with real content
-              'Has error ? show error message'
-            }
+            error={errors.service_name && errors.service_name.message}
+            
             control={control}
             autoCapitalize="sentences"
             autoCorrect
@@ -77,10 +91,7 @@ export function RegisterLoginData() {
             testID="email-input"
             title="E-mail"
             name="email"
-            error={
-              // Replace here with real content
-              'Has error ? show error message'
-            }
+            error={errors.email && errors.email.message}
             control={control}
             autoCorrect={false}
             autoCapitalize="none"
@@ -90,10 +101,7 @@ export function RegisterLoginData() {
             testID="password-input"
             title="Senha"
             name="password"
-            error={
-              // Replace here with real content
-              'Has error ? show error message'
-            }
+            error={errors.password && errors.password.message}
             control={control}
             secureTextEntry
           />
